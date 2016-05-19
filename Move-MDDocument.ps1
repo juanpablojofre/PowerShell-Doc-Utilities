@@ -24,6 +24,10 @@ function Move-MDDocument(){
         [parameter(Mandatory=$true)] [string] $NodeRoot
     )
 
+    $topicCount = $TopicFolder.Count
+    $timestamp = [DateTime]::Now.ToString("yyyy-MM-dd HHmmss")
+    Write-Verbose "[$timestamp] Total topics: $topiccount. Moving document with title '$TopicTitle' to '$NodeRoot / $TopicNode'"
+
     $filenamePattern = ([System.Text.RegularExpressions.Regex]::Replace($TopicTitle,"[^A-Za-z0-9]",".")).ToLowerInvariant()
     $filenamePattern = ([System.Text.RegularExpressions.Regex]::Replace($filenamePattern,"\.+?","[^A-Za-z0-9]+?")).ToLowerInvariant()
     $filenamePattern = "^" + $filenamePattern + "$"

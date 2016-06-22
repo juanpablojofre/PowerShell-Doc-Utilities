@@ -1,7 +1,7 @@
 ﻿<# 
 
 #>
-function Generate-PSCoreNewMDsFromMAML()
+function Generate-PSCoreNewMDsFromModuleMAML()
 {
     [CmdletBinding()]
     Param(
@@ -69,8 +69,8 @@ function Generate-PSCoreNewMDsFromMAML()
     }
 
 
-    $mamlfiles = Get-ChildItem -Path $PSCoreMamlSourceFolder -Filter "*.xml" -Recurse |`
-        Where-Object { -not $_.PSIsContainer -and $_.FullName -like "*\opsmaml\commands\*.xml" } |`
+    $mamlfiles = Get-ChildItem -Path $PSCoreMamlSourceFolder -Filter "PSITPro*.xml" -Recurse |`
+        Where-Object { -not $_.PSIsContainer } |`
         ForEach-Object { $_.FullName }
 
     [int]$i = 1 
@@ -132,6 +132,7 @@ function Generate-PSCoreNewMDsFromMAML()
                 }
 
                 Update-MarkdownHelp  -Path $OutputFolder 
+                Update-MarkdownHelpModule -Path $OutputFolder 
             }
             catch{
                 $errmsg =  "Unable to update markdown files for:`n`r" + `

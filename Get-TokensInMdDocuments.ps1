@@ -23,7 +23,7 @@
 #>
 [CmdletBinding()]
 Param(
-  [string]$documentsfolder = "C:\GIT\PowerShell-Docs\scripting"
+  [string]$documentsfolder = "C:\tmp\WindowsServerDocs"
 )
 
 $tokensFound  = @()

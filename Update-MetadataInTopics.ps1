@@ -25,7 +25,6 @@ function Update-MetadataInTopics()
         [parameter(Mandatory=$false)] [hashtable] $NewMetadata
     )
 
-    . "C:\git\juanpablo.jofre@bitbucket.org\powershell\PowerShell-Docs\DocumentManagement\Update-Metadata.ps1"
 
     if(-not $newMetadata){
         $newMetadata = @{

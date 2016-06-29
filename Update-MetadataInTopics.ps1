@@ -25,6 +25,7 @@ function Update-MetadataInTopics()
         [parameter(Mandatory=$false)] [hashtable] $NewMetadata
     )
 
+    . "Update-Metadata.ps1"
 
     if(-not $newMetadata){
         $newMetadata = @{

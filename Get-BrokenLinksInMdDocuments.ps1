@@ -60,7 +60,7 @@ function Get-BrokenLinksInMdDocuments()
         -   Enable save statistics
     #>
 
-    . "C:\GIT\juanpablo.jofre@bitbucket.org\powershell\PowerShell-Docs\DocumentManagement\Get-Relativepath.ps1"
+    . "Get-Relativepath.ps1"
     $initialWarningPreference = $WarningPreference
     $initialErrorActionPreference = $ErrorActionPreference
 

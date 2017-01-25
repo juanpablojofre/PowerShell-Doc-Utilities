@@ -1,16 +1,16 @@
-﻿ <#
+<#
 
     .SYNOPSIS
 
     .DESCRIPTION
 
     .PARAMETER  DocumentsFolder
-        The path to the folder (with subfulders) that contains all MD documents to process.
+        The path to the folder (with subfolders) that contains all MD documents to process.
 
     .PARAMETER  BrokenLinkReportPrefix
         The file prefix for all reports.
 
-    .PARAMETER  $Recurse
+    .PARAMETER  Recurse
         A switch to enable recursive folder search.
 
     .OUTPUTS
@@ -30,8 +30,8 @@ function Expand-GuidReferenceInMdDocuments()
 
     $guidReferencePattern = "\[([A-Za-z0-9_-]+)\]\(([0-9A-Za-z]{8}(-[0-9A-Za-z]{4}){3}-[0-9A-Za-z]{12})\)"
 
-    Get-ChildItem -Path $documentsfolder -Filter "*.md" -recurse:$Recurse |`
-        Where-Object { $_.Directory.FullName -notlike "*.ignore*" -and (-not $_.PSIsContainer)} |`
+    Get-ChildItem -Path $documentsfolder -Filter "*.md" -recurse:$Recurse |
+        Where-Object { $_.Directory.FullName -notlike "*.ignore*" -and (-not $_.PSIsContainer)} |
         ForEach-Object { 
             [string]$fileName = $_.FullName
             [string]$content = [System.IO.File]::ReadAllText($fileName)

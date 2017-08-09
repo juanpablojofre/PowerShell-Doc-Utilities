@@ -65,7 +65,7 @@ function Update-Metadata()
                 $tagsToRemove[$_.Trim()] += 1
             }
 
-        [string[]]$content = [System.IO.File]::ReadAllLines($DocumentPath);
+        [string[]]$content = [System.IO.File]::ReadAllLines($DocumentPath, (Get-EncodingFromLabel -encode $encode));
 
         ## Skipping empty lines at the beginning of the file
         [int]$i = 0;

@@ -26,10 +26,11 @@ function Test-MDReference () {
     } 
 
     PROCESS {
+        Write-Progress ("{0}[{1,4}]: {2}" -f $Reference.DocumentPath, $Reference.LineNumber, $Reference.OriginalReference)
         if($Reference.Link -like "http*"){
-            $r = Test-HttpUrl -url ($Reference.Link)
+            $r = Test-HttpUrl -url ($Reference.Link) -MaximumRedirection 10
 
-            if(($r.StatusCode -ge 200) -and ($r.StatusCode -le 299)){
+            if( $r -eq "OK" ){
                 $Reference.ReferenceStatus = [MDReferenceStatus]::Passed
             }
             else {
@@ -46,14 +47,31 @@ function Test-MDReference () {
                 [string]$fulllink = [string]::Empty
 
                 ## Test external link
-                if ([string]::IsNullOrWhiteSpace($externallink)) {
-                    ## reference to document itself
-                    $externalexists = $true 
-                    $fulllink = $Reference.DocumentPath
-                }
-                else {
-                    $relativelink = Join-Path -Path ([System.IO.Path]::GetDirectoryName($Reference.DocumentPath)) -ChildPath $externallink
-                    $externalexists = Test-Path -Path $relativelink -PathType Leaf
+                if (-not [string]::IsNullOrWhiteSpace($externallink)) {
+                    [string]$relativelink = [string]::Empty
+                    try {
+                            $relativelink = Join-Path -Path ([System.IO.Path]::GetDirectoryName($Reference.DocumentPath)) -ChildPath $externallink
+                            $externalexists = Test-Path -Path $relativelink -PathType Leaf
+
+                            if(-not $externalexists){
+                                Write-Warning "Path to external link '$externallink' couldn't be resolved as relative path '$relativelink'"
+                            }
+                        }
+                    catch {
+                        Write-Error "Test-MDReference: Error testing external link"
+
+                        if ([string]::IsNullOrEmpty($relativelink)) {
+                            Write-Error "`$relativelink couldn't be built"
+                        }
+                        else{
+                            Write-Error "Test-path for '$relativelink' failed'"
+                        }
+
+                        $docpath = $Reference.DocumentPath
+                        Write-Error "  --> DocumentPath : $docpath"
+                        Write-Error "  --> External Link: $externallink"
+                        Write-Error $Error
+                    }
 
                     if($externalexists){
                         ## Check relative link is in the assets collection
@@ -61,6 +79,11 @@ function Test-MDReference () {
                         $documentname = [System.IO.Path]::GetFileName($fulllink)
                         $externalexists = $AssetList[$documentname] -contains $fulllink
                     }
+                }
+                else {
+                    ## reference to document itself
+                    $externalexists = $true 
+                    $fulllink = $Reference.DocumentPath
                 }
 
                 ## Test internal link

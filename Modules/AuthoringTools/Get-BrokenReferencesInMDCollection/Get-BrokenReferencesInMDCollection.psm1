@@ -16,8 +16,9 @@ function Get-BrokenReferencesInMDCollection () {
         $Assets.Keys.Where({ $_ -like "*.md"}) |
             ForEach-Object { $Assets[$_]} |
             ForEach-Object { 
+                Write-Progress ($_)
                 Get-MDReferencesFromDocument -DocumentPath $_ | 
-                    Test-MDReference -AssetList $Assets -OnlyFailed
+                    Test-MDReference -AssetList $Assets -OnlyFailed 
             }
     }
 }

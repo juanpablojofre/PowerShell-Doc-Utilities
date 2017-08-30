@@ -7,11 +7,19 @@ function Get-AssetList() {
             [ValidateScript( { Test-Path -LiteralPath $_ -PathType Container })] 
             [string]$AssetFolder,
         [parameter(Mandatory = $false, ParameterSetName="UniqueReferences" )][switch]$OnlyUniqueReferences,
-        [parameter(Mandatory = $false, ParameterSetName="MultipleReferences" )][switch]$MultipleReferences
+        [parameter(Mandatory = $false, ParameterSetName="MultipleReferences" )][switch]$MultipleReferences,
+        [parameter(Mandatory = $false, ParameterSetName="default" )] 
+            [parameter(Mandatory = $false, ParameterSetName="UniqueReferences" )] 
+            [parameter(Mandatory = $false, ParameterSetName="MultipleReferences" )] 
+            [switch]$CaseSensitiveName
     )
 
     BEGIN{
         $Assets = @{}
+        if($CaseSensitiveName){
+            $Assets = [System.Collections.Hashtable]::new()
+        }
+
         $MultipleReferencedAssets = @{}
     }
 
@@ -19,7 +27,7 @@ function Get-AssetList() {
         Get-ChildItem -Path $AssetFolder -recurse |
             Where-Object { $_.FullName -notlike "*.ignore*" -and (-not $_.PSIsContainer)} |
             ForEach-Object { 
-                $name = $_.Name.ToLowerInvariant();
+                $name = $_.Name
                 $path = $_.FullName
                 if (-not $Assets.ContainsKey($name)) {
                     $Assets.Add($name, @())
